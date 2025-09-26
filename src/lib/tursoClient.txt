@@ -1,0 +1,62 @@
+// src/lib/tursoClient.ts
+import { createClient } from "@libsql/client";
+import { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN } from '$env/static/private';
+import { building } from '$app/environment';
+
+// Create a singleton client instance
+let tursoClient: ReturnType<typeof createClient> | null = null;
+
+export function getTursoClient() {
+  if (!tursoClient && !building) {
+    tursoClient = createClient({
+      url: TURSO_DATABASE_URL,
+      authToken: TURSO_AUTH_TOKEN,
+    });
+  }
+  return tursoClient;
+}
+
+// Helper function to execute queries with proper error handling
+export async function executeQuery<T = any>(
+  sql: string,
+  args?: any[]
+): Promise<{ data: T[] | null; error: Error | null }> {
+  try {
+    const client = getTursoClient();
+    if (!client) {
+      return { data: null, error: new Error('Database client not initialized') };
+    }
+    
+    const result = await client.execute({
+      sql,
+      args: args || []
+    });
+    
+    return { data: result.rows as T[], error: null };
+  } catch (error) {
+    console.error('Database query error:', error);
+    return { data: null, error: error as Error };
+  }
+}
+
+// Batch execute for multiple queries in a transaction
+export async function executeBatch(
+  queries: Array<{ sql: string; args?: any[] }>
+): Promise<{ success: boolean; error: Error | null }> {
+  try {
+    const client = getTursoClient();
+    if (!client) {
+      return { success: false, error: new Error('Database client not initialized') };
+    }
+    
+    await client.batch(queries.map(q => ({
+      sql: q.sql,
+      args: q.args || []
+    })));
+    
+    return { success: true, error: null };
+  } catch (error) {
+    console.error('Database batch error:', error);
+    return { success: false, error: error as Error };
+  }
+}

@@ -1,0 +1,128 @@
+// src/routes/+page.server.turso.ts - NEW VERSION
+// Rename your existing +page.server.ts to +page.server.supabase.ts as backup
+import type { PageServerLoad } from './$types';
+import { TursoHomepage, generateHourlySeed, validatePageParams } from '$lib/server/turso-helpers';
+import { HomepageCache, getCacheHeaders, CACHE_TTL } from '$lib/server/cache';
+
+export const load: PageServerLoad = async ({ url, setHeaders }) => {
+  const PAGE_SIZE = 20;
+  
+  // Parse and validate parameters
+  const page = validatePageParams(url.searchParams.get('page'));
+  const refreshParam = url.searchParams.get('refresh');
+  const seedParam = url.searchParams.get('seed');
+  
+  // Generate seed strategy:
+  // - Use hourly seed by default (changes every hour)
+  // - Use custom seed if provided
+  // - Force new seed if refresh=true
+  let seed: number;
+  if (refreshParam === 'true') {
+    seed = Date.now(); // Unique seed for forced refresh
+  } else if (seedParam && !isNaN(parseInt(seedParam, 10))) {
+    seed = parseInt(seedParam, 10);
+  } else {
+    seed = generateHourlySeed(); // Changes every hour
+  }
+
+  // Check cache first (unless force refresh)
+  if (refreshParam !== 'true') {
+    const cached = HomepageCache.getRandomManga(page, seed);
+    if (cached) {
+      console.log(`Cache HIT: Homepage page ${page}, seed ${seed}`);
+      setHeaders(getCacheHeaders(CACHE_TTL.HOMEPAGE_RANDOM));
+      return cached;
+    }
+  }
+
+  console.log(`Cache MISS: Fetching homepage page ${page}, seed ${seed}`);
+
+  try {
+    // Fetch data from Turso
+    const [totalCount, comics] = await Promise.all([
+      TursoHomepage.getTotalCount(),
+      TursoHomepage.getRandomManga(page, PAGE_SIZE, seed)
+    ]);
+
+    const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+    const isFirstPage = page === 1;
+
+    // Prepare response data
+    const responseData = {
+      comics,
+      total: totalCount,
+      page,
+      seed,
+      meta: {
+        title: isFirstPage
+          ? 'Read Hentai Pics | Read Hentai, Doujinshi, and Latest Pictures'
+          : `Popular Hentai | Page ${page} | Read Hentai`,
+        description: isFirstPage
+          ? 'Discover popular manga, hentai, and doujinshi that others are reading on Read Hentai. Find trending adult comics and community favorites!'
+          : `Browse page ${page} of popular hentai selections. Discover trending adult comics, hentai and doujinshi. Read Hentai Alternative | Rule 34 Alternative`,
+        prev: page > 1 ? `/?page=${page - 1}&seed=${seed}` : null,
+        next: page < totalPages ? `/?page=${page + 1}&seed=${seed}` : null
+      }
+    } as const;
+
+    // Cache the result
+    HomepageCache.setRandomManga(page, seed, responseData);
+    
+    // Set HTTP cache headers for browser/CDN caching
+    setHeaders(getCacheHeaders(CACHE_TTL.HOMEPAGE_RANDOM));
+    
+    console.log(`Fetched ${comics.length} comics for page ${page}, total: ${totalCount}`);
+    
+    return responseData;
+
+  } catch (error) {
+    console.error('Turso homepage error:', error);
+    
+    // Fallback strategy: try simple random query
+    try {
+      const [totalCount, comics] = await Promise.all([
+        TursoHomepage.getTotalCount(),
+        TursoHomepage.getRandomMangaSimple(page, PAGE_SIZE)
+      ]);
+
+      const fallbackData = {
+        comics,
+        total: totalCount,
+        page,
+        seed: generateHourlySeed(),
+        meta: {
+          title: 'Read Hentai Pics | Read Hentai, Doujinshi, and Latest Pictures',
+          description: 'Discover popular manga, hentai, and doujinshi that others are reading on Read Hentai.',
+          prev: page > 1 ? `/?page=${page - 1}` : null,
+          next: null // Don't show next without knowing total pages
+        }
+      };
+
+      console.log('Used fallback query successfully');
+      return fallbackData;
+
+    } catch (fallbackError) {
+      console.error('Fallback also failed:', fallbackError);
+      
+      // Last resort: return empty state
+      return {
+        comics: [],
+        total: 0,
+        page: 1,
+        seed: generateHourlySeed(),
+        meta: {
+          title: 'Read Hentai Pics | Read Hentai, Doujinshi, and Latest Pictures',
+          description: 'Discover popular manga, hentai, and doujinshi that others are reading on Read Hentai.',
+          prev: null,
+          next: null
+        }
+      };
+    }
+  }
+};
+
+// Optional: Export a function to clear cache (for admin use)
+export async function clearHomepageCache() {
+  HomepageCache.clearAll();
+  return { success: true, message: 'Homepage cache cleared' };
+}
