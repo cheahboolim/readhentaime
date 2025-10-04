@@ -18,14 +18,14 @@
 	import Coinpoll from '$lib/components/ownads/coinpoll.svelte'
 	import Popunder from '$lib/components/trafficstars/popunder.svelte'
 	import Videoslider from '$lib/components/trafficstars/videoslider.svelte'
-
+	import GgBetAds from '$lib/components/ownads/GgBetAds.svelte'
 	// ✅ Google Analytics removed
 </script>
 
 <svelte:head>
 	<meta name="theme-color" content="#000000" />
 	<meta name="msapplication-TileColor" content="#000000" />
-	<link rel="manifest" href="/manifest.webmanifest" />
+	<link rel="manifest" href="/manifest.json" />
 
 	<link
 		rel="icon"
@@ -70,6 +70,21 @@
 	<main class="flex-1">
 		<slot />
 	</main>
+
+		<!-- Responsive Ad Section -->
+	<div class="container mx-auto px-4 py-4">
+		<div class="flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-6">
+			<div class="flex justify-center">
+				<AAdsBanner />
+			</div>
+			<div class="flex justify-center">
+				<Coinpoll />
+			</div>
+			<div class="flex justify-center">
+				<GgBetAds />
+			</div>
+		</div>
+	</div>
 
 	<div class="container mx-auto px-4 py-2">
 		<AppInstallBanner />
