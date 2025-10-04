@@ -1,12 +1,44 @@
 // src/lib/server/cache.ts
-import NodeCache from 'node-cache';
+// Simple in-memory cache compatible with Cloudflare Workers
+class SimpleCache {
+  private store: Map<string, { value: any; expires: number }> = new Map();
+
+  set(key: string, value: any, ttlSeconds?: number): void {
+    const expires = ttlSeconds ? Date.now() + (ttlSeconds * 1000) : Infinity;
+    this.store.set(key, { value, expires });
+  }
+
+  get<T>(key: string): T | undefined {
+    const item = this.store.get(key);
+    if (!item) return undefined;
+    
+    if (item.expires < Date.now()) {
+      this.store.delete(key);
+      return undefined;
+    }
+    
+    return item.value as T;
+  }
+
+  del(key: string): void {
+    this.store.delete(key);
+  }
+
+  keys(): string[] {
+    return Array.from(this.store.keys());
+  }
+
+  getStats() {
+    return {
+      keys: this.store.size,
+      hits: 0, // Simple implementation doesn't track hits
+      misses: 0
+    };
+  }
+}
 
 // Initialize cache with basic settings
-export const cache = new NodeCache({
-  stdTTL: 3600, // Default 1 hour TTL
-  checkperiod: 600, // Check for expired keys every 10 minutes
-  useClones: false // Better performance, but be careful with object mutations
-});
+export const cache = new SimpleCache();
 
 // Cache configuration constants
 export const CACHE_KEYS = {
