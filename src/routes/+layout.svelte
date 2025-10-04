@@ -18,7 +18,7 @@
 	import Coinpoll from '$lib/components/ownads/coinpoll.svelte'
 	import Popunder from '$lib/components/trafficstars/popunder.svelte'
 	import Videoslider from '$lib/components/trafficstars/videoslider.svelte'
-	import GgBetAds from '$lib/components/ownads/GgBetAds.svelte'
+	import GgBetAds from '$lib/components/ownads/ggbetads.svelte'
 	// ✅ Google Analytics removed
 </script>
 
