@@ -3,8 +3,12 @@
 import { error } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { supabase } from '$lib/supabaseClient'
+import { getCacheHeaders } from '$lib/server/cache'
 
-export const load: PageServerLoad = async ({ params, url }) => {
+export const load: PageServerLoad = async ({ params, url, setHeaders }) => {
+	// Set 1-year cache since browse category content is relatively stable
+	setHeaders(getCacheHeaders(31536000)); // 1 year
+
 	const { type, slug } = params
 	const page = Number(url.searchParams.get('page')) || 1
 	const PAGE_SIZE = 10

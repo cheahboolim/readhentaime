@@ -2,6 +2,7 @@
 //src/routes/read/[slug]/+page.server.ts - FULLY OPTIMIZED
 import { error } from '@sveltejs/kit'
 import { supabase } from '$lib/supabaseClient'
+import { getCacheHeaders } from '$lib/server/cache'
 
 type RelatedMeta = {
 	id: string
@@ -18,7 +19,10 @@ let cachedRandomComics: any[] | null = null
 let randomComicsCacheTime = 0
 const RANDOM_CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
 
-export async function load({ params }) {
+export async function load({ params, setHeaders }) {
+	// Set 1-year cache since manga details rarely change
+	setHeaders(getCacheHeaders(31536000)) // 1 year
+
 	const slug = params.slug
 
 	const { data: slugRow, error: slugErr } = await supabase

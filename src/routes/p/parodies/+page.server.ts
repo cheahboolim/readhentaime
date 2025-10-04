@@ -1,8 +1,12 @@
 // src/routes/p/parodies/+page.server.ts
 import type { PageServerLoad } from './$types'
 import type { Parody } from '$lib/types'
+import { getCacheHeaders } from '$lib/server/cache'
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load: PageServerLoad = async ({ locals, url, setHeaders }) => {
+	// Set 1-year cache since parodies are relatively stable
+	setHeaders(getCacheHeaders(31536000)) // 1 year
+
 	const supabase = locals.supabase
 
 	const { data: parodies, error } = await supabase

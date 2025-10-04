@@ -1,7 +1,11 @@
 // src/routes/p/tags/+page.server.ts
 import type { PageServerLoad } from './$types'
+import { getCacheHeaders } from '$lib/server/cache'
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load: PageServerLoad = async ({ locals, url, setHeaders }) => {
+	// Set 1-year cache since tags are relatively stable
+	setHeaders(getCacheHeaders(31536000)) // 1 year
+
 	const supabase = locals.supabase
 
 	const { data: tags, error } = await supabase

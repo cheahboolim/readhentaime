@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import type { PageServerLoad } from './$types';
 import { supabase } from '$lib/supabaseClient';
+import { HomepageCache, getCacheHeaders } from '$lib/server/cache';
 
 // Define types for better TypeScript support
 interface MangaItem {
@@ -22,40 +23,50 @@ interface ComicItem {
 	author: { name: string };
 }
 
-export const load: PageServerLoad = async ({ url }) => {
+export const load: PageServerLoad = async ({ url, setHeaders }) => {
 	const PAGE_SIZE = 20;
 
 	const pageParam = parseInt(url.searchParams.get('page') ?? '1', 10);
 	const page = Math.max(1, isNaN(pageParam) ? 1 : pageParam);
-	const refreshParam = url.searchParams.get('refresh');
-	const seedParam = url.searchParams.get('seed');
+	const forceRefresh = url.searchParams.get('refresh') === 'true';
 
-	// Generate a seed for consistent pagination within the same random set
-	// If refresh=true or no seed, generate new seed
-	let seed: number;
-	if (refreshParam === 'true' || !seedParam) {
-		seed = Math.floor(Math.random() * 1000000);
-	} else {
-		seed = parseInt(seedParam, 10) || Math.floor(Math.random() * 1000000);
+	// Generate time-based cache key that changes every 30 minutes for better randomness
+	const now = new Date();
+	const cacheSlot = Math.floor(now.getTime() / (30 * 60 * 1000)); // 30-minute slots
+	const timeBasedSeed = cacheSlot % 1000000; // Keep seed reasonable
+
+	// Check cache first (unless force refresh)
+	if (!forceRefresh) {
+		const cached = HomepageCache.getRandomManga(page, timeBasedSeed);
+		if (cached) {
+			// Set cache headers for CDN/browser caching
+			setHeaders(getCacheHeaders(60 * 10)); // 10 minutes browser cache
+			return cached;
+		}
 	}
 
 	const from = (page - 1) * PAGE_SIZE;
-	const to = from + PAGE_SIZE - 1;
 
-	// First, get the total count for pagination
-	const { count: totalCount, error: countError } = await supabase
-		.from('manga')
-		.select('*', { count: 'exact', head: true });
+	// Get total count (cache for longer since it changes less frequently)
+	let totalCount = HomepageCache.getTotalCount();
+	if (!totalCount) {
+		const { count, error: countError } = await supabase
+			.from('manga')
+			.select('*', { count: 'exact', head: true });
 
-	if (countError) {
-		console.error('Error getting manga count:', countError);
-		throw new Error('Failed to load manga count');
+		if (countError) {
+			console.error('Error getting manga count:', countError);
+			throw new Error('Failed to load manga count');
+		}
+		
+		totalCount = count ?? 0;
+		HomepageCache.setTotalCount(totalCount);
 	}
 
-	// Use seeded random with PostgreSQL
+	// Use time-based seeded random for better randomness that still allows pagination
 	const { data: manga, error: mangaError } = await supabase
 		.rpc('get_random_manga', {
-			seed_value: seed / 1000000, // PostgreSQL setseed expects value between 0 and 1
+			seed_value: timeBasedSeed / 1000000, // PostgreSQL setseed expects value between 0 and 1
 			limit_count: PAGE_SIZE,
 			offset_count: from
 		});
@@ -64,20 +75,26 @@ export const load: PageServerLoad = async ({ url }) => {
 	let fallbackManga: MangaItem[] = [];
 	if (mangaError || !manga) {
 		console.log('RPC not available, falling back to simple random');
+		
+		// Get more items and shuffle them for better randomness
+		const fetchSize = Math.min(PAGE_SIZE * 3, 100); // Get extra items to choose from
+		const randomOffset = Math.floor(Math.random() * Math.max(0, totalCount - fetchSize));
+		
 		const { data: fallback, error: fallbackError } = await supabase
 			.from('manga')
 			.select('id, title, feature_image_url')
-			.range(from, to);
+			.range(randomOffset, randomOffset + fetchSize - 1);
 
 		if (fallbackError || !fallback) {
 			console.error('Error fetching manga:', fallbackError);
 			throw new Error('Failed to load manga');
 		}
 
-		// Shuffle the results client-side (less ideal but works)
+		// Shuffle and take the required page size
 		fallbackManga = fallback
 			.map(item => ({ ...item, _sortKey: Math.random() }))
 			.sort((a, b) => a._sortKey - b._sortKey)
+			.slice(from % fetchSize, (from % fetchSize) + PAGE_SIZE)
 			.map(({ _sortKey, ...item }) => item);
 	}
 
@@ -104,15 +121,14 @@ export const load: PageServerLoad = async ({ url }) => {
 		author: { name: 'Unknown' }
 	}));
 
-	const total = totalCount ?? 0;
-	const totalPages = Math.ceil(total / PAGE_SIZE);
+	const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 	const isFirstPage = page === 1;
 
-	return {
+	const result = {
 		comics,
-		total,
+		total: totalCount,
 		page,
-		seed, // Include seed for consistent pagination
+		cacheSlot: timeBasedSeed, // For debugging/monitoring
 		meta: {
 			title: isFirstPage
 				? 'Read Hentai Pics | Read Hentai, Doujinshi, and Latest Pictures'
@@ -120,8 +136,16 @@ export const load: PageServerLoad = async ({ url }) => {
 			description: isFirstPage
 				? 'Discover popular manga, hentai, and doujinshi that others are reading on Read Hentai. Find trending adult comics and community favorites!'
 				: `Browse page ${page} of popular hentai selections. Discover trending adult comics, hentai and doujinshi. Read Hentai Alternative | Rule 34 Alternative`,
-			prev: page > 1 ? `/?page=${page - 1}&seed=${seed}` : null,
-			next: page < totalPages ? `/?page=${page + 1}&seed=${seed}` : null
+			prev: page > 1 ? `/?page=${page - 1}` : null,
+			next: page < totalPages ? `/?page=${page + 1}` : null
 		}
 	} as const;
+
+	// Cache the result for 30 minutes
+	HomepageCache.setRandomManga(page, timeBasedSeed, result);
+	
+	// Set cache headers for CDN/browser caching  
+	setHeaders(getCacheHeaders(60 * 10)); // 10 minutes browser cache
+
+	return result;
 };

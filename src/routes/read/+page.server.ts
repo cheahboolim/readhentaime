@@ -1,6 +1,7 @@
 // src/routes/404/+page.server.ts
 import type { PageServerLoad } from './$types';
 import { supabase } from '$lib/supabaseClient';
+import { getCacheHeaders } from '$lib/server/cache';
 
 interface MangaItem {
 	id: number;
@@ -21,7 +22,10 @@ interface ComicItem {
 	author: { name: string };
 }
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ setHeaders }) => {
+	// Set 1-year cache since random manga recommendations don't change frequently
+	setHeaders(getCacheHeaders(31536000)); // 1 year
+
 	const RECOMMENDED_COUNT = 12;
 	const randomSeed = Math.floor(Math.random() * 1000000);
 

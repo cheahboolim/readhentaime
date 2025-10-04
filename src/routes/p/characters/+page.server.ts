@@ -1,7 +1,11 @@
 import type { PageServerLoad } from './$types'
 import { supabase } from '$lib/supabaseClient'
+import { getCacheHeaders } from '$lib/server/cache'
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load: PageServerLoad = async ({ locals, url, setHeaders }) => {
+	// Set 1-year cache since characters are relatively stable
+	setHeaders(getCacheHeaders(31536000)) // 1 year
+
 	const supabase = locals.supabase
 
 	const { data: characters, error } = await supabase
