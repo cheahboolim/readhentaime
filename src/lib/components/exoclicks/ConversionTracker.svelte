@@ -22,7 +22,7 @@
   };
 
   // User behavior tracking
-  let startTime: number = Date.now();
+  let startTime: number = 0;
   let pageViews: number = 0;
   let hasSearched: boolean = false;
   let conversionToken: string | null = null;
@@ -31,12 +31,20 @@
   onMount(() => {
     if (!browser || !enableConversions) return;
 
-    initializeTracking();
-    setupEventListeners();
-    startTimeTracking();
+    try {
+      initializeTracking();
+      setupEventListeners();
+      startTimeTracking();
+    } catch (error) {
+      console.error('ConversionTracker initialization failed:', error);
+    }
   });
 
   function initializeTracking() {
+    if (!browser) return;
+    
+    startTime = Date.now();
+
     // Get conversion tracking token from URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const urlToken = urlParams.get('conversions_tracking');
@@ -79,6 +87,8 @@
   }
 
   function incrementPageView() {
+    if (!browser) return;
+    
     pageViews++;
     sessionStorage.setItem('page_views', pageViews.toString());
     
@@ -97,6 +107,8 @@
   }
 
   function setupEventListeners() {
+    if (!browser) return;
+
     // Track ad clicks
     document.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
@@ -148,6 +160,8 @@
   }
 
   function startTimeTracking() {
+    if (!browser) return;
+
     // 2 minute milestone
     setTimeout(() => {
       if (!firedConversions.has('time_2min')) {
@@ -164,7 +178,7 @@
   }
 
   async function fireConversion(goalType: keyof typeof conversionGoals) {
-    if (!enableConversions || !conversionToken || firedConversions.has(goalType)) {
+    if (!browser || !enableConversions || !conversionToken || firedConversions.has(goalType)) {
       return;
     }
 
@@ -193,9 +207,11 @@
       console.log(`✅ Conversion fired: ${goalType} ($${goal.value}) - ${goal.description}`);
       
       // Dispatch custom event for debugging/analytics
-      window.dispatchEvent(new CustomEvent('exoclick-conversion', {
-        detail: { goalType, value: goal.value, description: goal.description }
-      }));
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('exoclick-conversion', {
+          detail: { goalType, value: goal.value, description: goal.description }
+        }));
+      }
       
     } catch (error) {
       console.error('❌ Conversion tracking failed:', error);
@@ -216,6 +232,8 @@
 
   // Public method to get current user metrics
   export function getUserMetrics() {
+    if (!browser) return null;
+    
     const timeOnSite = Date.now() - startTime;
     const totalValue = [...firedConversions].reduce((sum, goalType) => {
       return sum + (conversionGoals[goalType as keyof typeof conversionGoals]?.value || 0);
@@ -231,8 +249,8 @@
     };
   }
 
-  // React to page changes
-  $: if ($page.url.pathname) {
+  // React to page changes - safer approach
+  $: if (browser && $page.url.pathname) {
     incrementPageView();
   }
 </script>

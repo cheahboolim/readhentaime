@@ -5,7 +5,7 @@
 	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import { afterNavigate } from '$app/navigation'
-	import { seo } from '$lib/seo.ts'
+	import { seo } from '$lib/seo'
 	import AAdsMiddleBanner from '$lib/components/AAdsMiddleBanner.svelte'
 	import MainNav from '$lib/components/MainNav.svelte'
 	import Footer from '$lib/components/Footer.svelte'

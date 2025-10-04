@@ -13,7 +13,7 @@
         class="w-full h-full object-cover object-top" 
         on:error={(e) => {
           console.log('Image failed to load:', image);
-          e.currentTarget.src = 'https://cdn.susmanga.com/alanding/7%20-%20meme/cover.jpg';
+          (e.currentTarget as HTMLImageElement).src = 'https://cdn.susmanga.com/alanding/7%20-%20meme/cover.jpg';
         }}
       />
     </div>

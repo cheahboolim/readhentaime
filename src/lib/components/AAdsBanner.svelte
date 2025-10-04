@@ -9,7 +9,7 @@
 
   <a
     href="https://aads.com/?partner=2407960"
-    class="text-xs text-right mt-1 text-gray-400 hover:text-white transition block text-center"
+    class="text-xs mt-1 text-gray-400 hover:text-white transition block text-center"
     target="_blank"
     rel="noopener noreferrer"
     data-ad="true" data-ad-type="aads-link"

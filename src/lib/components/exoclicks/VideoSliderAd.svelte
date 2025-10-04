@@ -26,13 +26,13 @@
     // Wait for script to load then initialize the ad
     script.onload = () => {
       // Initialize AdProvider
-      if (window.AdProvider) {
-        window.AdProvider.push({"serve": {}});
+      if ((window as any).AdProvider) {
+        (window as any).AdProvider.push({"serve": {}});
       } else {
         // Fallback if AdProvider is not immediately available
         setTimeout(() => {
-          if (window.AdProvider) {
-            window.AdProvider.push({"serve": {}});
+          if ((window as any).AdProvider) {
+            (window as any).AdProvider.push({"serve": {}});
           }
         }, 100);
       }
