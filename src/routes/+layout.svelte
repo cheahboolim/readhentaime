@@ -19,6 +19,9 @@
 	import Popunder from '$lib/components/trafficstars/popunder.svelte'
 	import Videoslider from '$lib/components/trafficstars/videoslider.svelte'
 	import GgBetAds from '$lib/components/ownads/ggbetads.svelte'
+	import PopunderAd from '$lib/components/exoclicks/PopunderAd.svelte'
+	import InterstitialAd from '$lib/components/exoclicks/InterstitialAd.svelte'
+	import VideoSliderAd from '$lib/components/exoclicks/VideoSliderAd.svelte'
 	// ✅ Google Analytics removed
 </script>
 
@@ -90,4 +93,9 @@
 		<AppInstallBanner />
 	</div>
 	<Footer />
+	
+	<!-- ExoClick Ads -->
+	<PopunderAd />
+	<InterstitialAd />
+	<VideoSliderAd />
 </div>

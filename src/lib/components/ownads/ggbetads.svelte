@@ -1,6 +1,6 @@
 <script lang="ts">
   export let href: string = 'https://ggbetbestoffer.com/l/665aad1a09354e53af029ab2';
-  export let image: string = '/images/ggbet-bonus.jpg';
+  export let image: string = 'https://cdn.readhentai.me/ads/cover.png';
 </script>
 
 <a href={href} target="_blank" rel="noopener noreferrer" class="block w-[300px] h-[250px]">

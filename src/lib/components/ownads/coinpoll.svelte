@@ -1,6 +1,6 @@
 <script lang="ts">
   export let href: string = 'https://news.susmanga.com/7-meme';
-  export let image: string = '/images/crypto-meme-poll.jpg';
+  export let image: string = 'https://cdn.readhentai.me/ads/cryptoads.jpg';
 </script>
 
 <a href={href} target="_blank" rel="noopener noreferrer" class="block w-[300px] h-[250px]">
