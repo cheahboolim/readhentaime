@@ -24,6 +24,7 @@
 	import VideoSliderAd from '$lib/components/exoclicks/VideoSliderAd.svelte'
 	import ConversionTracker from '$lib/components/exoclicks/ConversionTracker.svelte'
 	import ConversionDebug from '$lib/components/exoclicks/ConversionDebug.svelte'
+	import AgeVerificationModal from '$lib/components/AgeVerificationModal.svelte'
 	// ✅ Google Analytics removed
 </script>
 
@@ -104,4 +105,7 @@
 	<!-- ExoClick S2S Conversion Tracking -->
 	<ConversionTracker />
 	<ConversionDebug />
+	
+	<!-- Age Verification Modal (First-time visitors only) -->
+	<AgeVerificationModal />
 </div>

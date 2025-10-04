@@ -13,6 +13,7 @@
     ad_click: { value: 0.50, description: "User clicked monetized ad" },
     pages_40: { value: 0.40, description: "40+ page views (industry standard)" },
     bookmark: { value: 0.35, description: "Bookmark/favorite action" },
+    age_verified: { value: 0.30, description: "Completed age verification (quality user)" },
     pages_10: { value: 0.20, description: "10+ page views in session" },
     time_5min: { value: 0.15, description: "5+ minutes on site" },
     search_used: { value: 0.10, description: "Used search functionality" },
@@ -155,6 +156,13 @@
           hasSearched = true;
           setTimeout(() => fireConversion('search_used'), 1000); // Delay to ensure real search
         }
+      }
+    });
+
+    // Track age verification completion
+    window.addEventListener('age-verification-completed', () => {
+      if (!firedConversions.has('age_verified')) {
+        fireConversion('age_verified');
       }
     });
   }

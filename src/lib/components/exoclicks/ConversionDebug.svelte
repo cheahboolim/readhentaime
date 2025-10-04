@@ -40,6 +40,7 @@
     const sessionStart = sessionStorage.getItem('session_start');
     const firedConversions = sessionStorage.getItem('fired_conversions');
     const lastVisit = localStorage.getItem('last_visit');
+    const ageVerified = localStorage.getItem('age_verified');
 
     const timeOnSite = sessionStart ? 
       Math.floor((Date.now() - parseInt(sessionStart)) / 1000) : 0;
@@ -51,6 +52,7 @@
       timeOnSite: `${Math.floor(timeOnSite / 60)}m ${timeOnSite % 60}s`,
       firedConversions: firedConversions ? JSON.parse(firedConversions) : [],
       isReturningUser: !!lastVisit,
+      ageVerified: !!ageVerified,
       url: window.location.href
     };
   }
@@ -69,6 +71,7 @@
       sessionStorage.removeItem('session_start');
       sessionStorage.removeItem('fired_conversions');
       localStorage.removeItem('last_visit');
+      localStorage.removeItem('age_verified'); // Also clear age verification
       updateDebugDisplay();
     }
   }
@@ -109,6 +112,13 @@
           {conversionData.isReturningUser ? 'Yes' : 'No'}
         </span>
       </div>
+      
+      <div class="flex justify-between">
+        <span>Age Verified:</span>
+        <span class="text-{conversionData.ageVerified ? 'green' : 'yellow'}-400">
+          {conversionData.ageVerified ? 'Yes' : 'Pending'}
+        </span>
+      </div>
     </div>
 
     <div class="mb-3">
@@ -137,6 +147,13 @@
         class="w-full bg-green-600 hover:bg-green-500 px-2 py-1 rounded text-xs"
       >
         Simulate Search ($0.10)
+      </button>
+      
+      <button 
+        on:click={() => simulateConversion('age_verified')}
+        class="w-full bg-purple-600 hover:bg-purple-500 px-2 py-1 rounded text-xs"
+      >
+        Simulate Age Verify ($0.30)
       </button>
       
       <button 
