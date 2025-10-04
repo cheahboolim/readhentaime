@@ -22,6 +22,8 @@
 	import PopunderAd from '$lib/components/exoclicks/PopunderAd.svelte'
 	import InterstitialAd from '$lib/components/exoclicks/InterstitialAd.svelte'
 	import VideoSliderAd from '$lib/components/exoclicks/VideoSliderAd.svelte'
+	import ConversionTracker from '$lib/components/exoclicks/ConversionTracker.svelte'
+	import ConversionDebug from '$lib/components/exoclicks/ConversionDebug.svelte'
 	// ✅ Google Analytics removed
 </script>
 
@@ -98,4 +100,8 @@
 	<PopunderAd />
 	<InterstitialAd />
 	<VideoSliderAd />
+	
+	<!-- ExoClick S2S Conversion Tracking -->
+	<ConversionTracker />
+	<ConversionDebug />
 </div>

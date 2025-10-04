@@ -1,5 +1,5 @@
 <!-- src/lib/components/Ads/AAdsBanner.svelte -->
-<div id="frame" style="width: 300px;margin: auto;z-index: 99998;height: auto">
+<div id="frame" style="width: 300px;margin: auto;z-index: 99998;height: auto" data-ad="true" data-ad-type="aads-banner">
   <iframe
     title="AADS Banner Ad 300x250"
     data-aa="2408907"
@@ -12,6 +12,7 @@
     class="text-xs text-right mt-1 text-gray-400 hover:text-white transition block text-center"
     target="_blank"
     rel="noopener noreferrer"
+    data-ad="true" data-ad-type="aads-link"
   >
     Advertise Here
   </a>

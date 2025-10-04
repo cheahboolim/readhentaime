@@ -29,6 +29,11 @@
     
     // Clear the input
     searchValue = '';
+    
+    // Fire search conversion (will be picked up by ConversionTracker)
+    window.dispatchEvent(new CustomEvent('search-performed', { 
+      detail: { query, timestamp: Date.now() } 
+    }));
   }
 
   function saveRecentSearch(query: string) {

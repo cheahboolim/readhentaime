@@ -3,7 +3,7 @@
   export let image: string = 'https://cdn.readhentai.me/ads/cover.png';
 </script>
 
-<a href={href} target="_blank" rel="noopener noreferrer" class="block w-[300px] h-[250px]">
+<a href={href} target="_blank" rel="noopener noreferrer" class="block w-[300px] h-[250px]" data-ad="true" data-ad-type="ggbet-bonus">
   <div class="w-full h-full bg-[#0b0f12] rounded-xl shadow-lg overflow-hidden flex flex-col justify-between border border-gray-700 cursor-pointer transform transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl">
     <!-- Image -->
     <div class="flex-1 overflow-hidden relative h-[125px]">
