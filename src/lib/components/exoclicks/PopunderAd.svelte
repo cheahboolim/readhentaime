@@ -10,7 +10,7 @@
   export let popupForce: boolean = false;
   export let chromeEnabled: boolean = true;
   export let newTab: boolean = false;
-  export let frequencyPeriod: number = 720;
+  export let frequencyPeriod: number = 180;
   export let frequencyCount: number = 1;
   export let triggerMethod: number = 3;
   export let triggerClass: string = "";
