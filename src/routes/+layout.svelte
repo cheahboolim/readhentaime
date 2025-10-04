@@ -25,6 +25,7 @@
 	import ConversionTracker from '$lib/components/exoclicks/ConversionTracker.svelte'
 	import ConversionDebug from '$lib/components/exoclicks/ConversionDebug.svelte'
 	import AgeVerificationModal from '$lib/components/AgeVerificationModal.svelte'
+	import AdBlockDetector from '$lib/components/AdBlockDetector.svelte'
 	// ✅ Google Analytics removed
 </script>
 
@@ -108,4 +109,7 @@
 	
 	<!-- Age Verification Modal (First-time visitors only) -->
 	<AgeVerificationModal />
+	
+	<!-- Ad Block Detection -->
+	<AdBlockDetector />
 </div>
