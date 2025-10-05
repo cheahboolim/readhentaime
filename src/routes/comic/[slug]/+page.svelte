@@ -5,11 +5,9 @@
 	import SimilarManga from '$lib/components/SimilarManga.svelte'
 	import MetaGroup from '$lib/components/MetaGroup.svelte'
 	import RandomPost from '$lib/components/RandomPost.svelte'
-	import TrafficStarsAd from '$lib/components/TrafficStarsAd.svelte'
 	import ImageErrorRefreshButton from '$lib/components/ImageErrorRefreshButton.svelte'
+	import VisitorAds from '$lib/components/VisitorAds.svelte'
 	import { goto } from '$app/navigation'
-	import AAdsMiddleBanner from '$lib/components/AAdsMiddleBanner.svelte'
-	import AAdsBanner from '$lib/components/AAdsBanner.svelte'
 
 	export let data
 	const { slug, comic } = data
@@ -30,6 +28,9 @@
 </svelte:head>
 
 <main class="container mx-auto px-4 py-8">
+	<!-- Visitor Ads -->
+	<VisitorAds />
+	
 	<div class="max-w-6xl mx-auto space-y-8">
 		<!-- Main comic info section with side-by-side layout on desktop -->
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">

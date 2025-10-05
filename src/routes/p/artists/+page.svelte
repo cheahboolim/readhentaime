@@ -2,6 +2,7 @@
 	import { writable, derived } from 'svelte/store'
 	import { seo } from '$lib/seo.ts'
 	import { onMount } from 'svelte'
+	import VisitorAds from '$lib/components/VisitorAds.svelte'
 
 	export let data: {
 		grouped: Record<string, { id: number; name: string; slug: string | null }[]>
@@ -90,6 +91,10 @@
 			Discover hentai artists from our collection of {data.totalArtists} artists, organized alphabetically.
 			Find your favorite creators and explore their works.
 		</p>
+
+		<!-- Visitor Ads -->
+		<VisitorAds />
+
 		<div
 			class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4"
 		>

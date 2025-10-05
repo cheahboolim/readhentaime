@@ -1,9 +1,7 @@
 <!-- src/routes/browse/+page.svelte -->
 <script lang="ts">
-	import AAdsBanner from '$lib/components/AAdsBanner.svelte'
-	import AAdsMiddleBanner from '$lib/components/AAdsMiddleBanner.svelte'
-
 	import { goto } from '$app/navigation'
+	import VisitorAds from '$lib/components/VisitorAds.svelte'
 
 	export let data
 
@@ -50,6 +48,9 @@
 
 		<!-- Subtitle -->
 		<h2 class="text-2xl md:text-3xl font-bold text-white mb-6">Discover Manga by Category</h2>
+
+		<!-- Visitor Ads -->
+		<VisitorAds />
 
 		<!-- Description -->
 		<div class="max-w-2xl mx-auto space-y-4 text-gray-300 text-lg mb-12">

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import VisitorAds from '$lib/components/VisitorAds.svelte'
 	export let data: {
 		query: string
 		comics: {
@@ -105,6 +106,9 @@
 			</p>
 		{/if}
 	</div>
+
+	<!-- Visitor Ads -->
+	<VisitorAds />
 
 	{#if data.comics.length === 0}
 		<div class="text-center py-12">

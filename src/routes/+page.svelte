@@ -1,9 +1,7 @@
 <script lang="ts">
-	import AAdsBanner from '$lib/components/AAdsBanner.svelte'
-	import AAdsMiddleBanner from '$lib/components/AAdsMiddleBanner.svelte'
 	import SearchBanner from '$lib/components/SearchBanner.svelte'
 	import RandomHome from '$lib/components/RandomHome.svelte'
-	import TrafficStarsAd from '$lib/components/TrafficStarsAd.svelte'
+	import VisitorAds from '$lib/components/VisitorAds.svelte'
 	export let data
 </script>
 
@@ -46,6 +44,10 @@
 <main class="max-w-6xl mx-auto px-4 py-8">
 	<!-- Hero Search Banner -->
 	<SearchBanner />
+	
+	<!-- Visitor Ads -->
+	<VisitorAds />
+	
 	<!-- For You Section -->
 	<RandomHome comics={data.comics} page={data.page} total={data.total} seed={data.seed} />
 </main>

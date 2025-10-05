@@ -6,27 +6,14 @@
 	import { page } from '$app/stores'
 	import { afterNavigate } from '$app/navigation'
 	import { seo } from '$lib/seo'
-	import AAdsMiddleBanner from '$lib/components/AAdsMiddleBanner.svelte'
 	import MainNav from '$lib/components/MainNav.svelte'
 	import Footer from '$lib/components/Footer.svelte'
-	import BannerAd from '$lib/components/adsterra/BannerAd.svelte'
-	import BlueBallsAd from '$lib/components/ownads/BlueBallsAd.svelte'
-	import AppInstallBanner from '$lib/components/AppInstallBanner.svelte'
-	import AAdsBanner from '$lib/components/AAdsBanner.svelte'
-	import ExoClickSlider from '$lib/components/ExoClickSlider.svelte'
-	import ExoOutstreamAd from '$lib/components/ExoOutstreamAd.svelte'
-	import Coinpoll from '$lib/components/ownads/coinpoll.svelte'
-	import Popunder from '$lib/components/trafficstars/popunder.svelte'
-	import Videoslider from '$lib/components/trafficstars/videoslider.svelte'
-	import GgBetAds from '$lib/components/ownads/ggbetads.svelte'
 	import PopunderAd from '$lib/components/exoclicks/PopunderAd.svelte'
-	import InterstitialAd from '$lib/components/exoclicks/InterstitialAd.svelte'
-	import VideoSliderAd from '$lib/components/exoclicks/VideoSliderAd.svelte'
 	import ConversionTracker from '$lib/components/exoclicks/ConversionTracker.svelte'
 	import ConversionDebug from '$lib/components/exoclicks/ConversionDebug.svelte'
 	import AgeVerificationModal from '$lib/components/AgeVerificationModal.svelte'
 	import AdBlockDetector from '$lib/components/AdBlockDetector.svelte'
-	// ✅ Google Analytics removed
+	// ✅ Moved visitor ads to individual pages
 </script>
 
 <svelte:head>
@@ -70,46 +57,16 @@
 <div class="relative flex min-h-screen flex-col bg-background text-foreground antialiased">
 	<MainNav />
 
-	<div class="container mx-auto px-4 py-2">
-		<AAdsMiddleBanner />
-	</div>
-
 	<main class="flex-1">
 		<slot />
 	</main>
 
-		<!-- Responsive Ad Section -->
-	<div class="container mx-auto px-4 py-4">
-		<div class="flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-6">
-			<div class="flex justify-center">
-				<AAdsBanner />
-			</div>
-			<div class="flex justify-center">
-				<Coinpoll />
-			</div>
-			<div class="flex justify-center">
-				<GgBetAds />
-			</div>
-		</div>
-	</div>
-
-	<div class="container mx-auto px-4 py-2">
-		<AppInstallBanner />
-	</div>
 	<Footer />
 	
-	<!-- ExoClick Ads -->
+	<!-- Essential components only (no visitor ads) -->
 	<PopunderAd />
-	<InterstitialAd />
-	<VideoSliderAd />
-	
-	<!-- ExoClick S2S Conversion Tracking -->
 	<ConversionTracker />
 	<ConversionDebug />
-	
-	<!-- Age Verification Modal (First-time visitors only) -->
 	<AgeVerificationModal />
-	
-	<!-- Ad Block Detection -->
 	<AdBlockDetector />
 </div>

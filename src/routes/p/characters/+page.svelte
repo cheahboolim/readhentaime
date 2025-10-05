@@ -2,6 +2,7 @@
 	import { writable, derived } from 'svelte/store'
 	import { seo } from '$lib/seo.ts'
 	import { onMount } from 'svelte'
+	import VisitorAds from '$lib/components/VisitorAds.svelte'
 
 	export let data: {
 		grouped: Record<string, { id: number; name: string; slug: string | null }[]>
