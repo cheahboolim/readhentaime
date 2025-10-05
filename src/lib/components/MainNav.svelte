@@ -93,7 +93,6 @@
 				deferredPrompt = null
 				canInstall = false
 			} catch (error) {
-				console.error('Install prompt failed:', error)
 				// Fallback to random page
 				window.location.href = '/random'
 			}
@@ -122,7 +121,6 @@
 
 		// Listen for install prompt
 		window.addEventListener('beforeinstallprompt', (e) => {
-			console.log('[MainNav] beforeinstallprompt triggered')
 			e.preventDefault()
 			deferredPrompt = e
 			canInstall = true
@@ -130,7 +128,6 @@
 
 		// Track when app gets installed
 		window.addEventListener('appinstalled', () => {
-			console.log('[MainNav] appinstalled fired')
 			if (typeof localStorage !== 'undefined') {
 				localStorage.setItem('Read Hentai_installed', '1')
 			}

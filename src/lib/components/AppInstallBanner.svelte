@@ -7,7 +7,6 @@
 	let canInstall = false
 	let showBanner = true
 	let isAlreadyInstalled = false
-	let debugInfo = ''
 
 	// Detect user OS
 	function detectOS(): string {
@@ -57,9 +56,6 @@
 		os = detectOS()
 		isAlreadyInstalled = checkIfInstalled()
 
-		debugInfo = `OS: ${os}, Installed: ${isAlreadyInstalled}, Dismissed: ${checkIfDismissed()}`
-		console.log('[AppInstallBanner] Debug info:', debugInfo)
-
 		// Don't show banner if already installed or recently dismissed
 		if (isAlreadyInstalled || checkIfDismissed()) {
 			showBanner = false
@@ -68,16 +64,13 @@
 
 		// Prepare install prompt if supported
 		window.addEventListener('beforeinstallprompt', (e) => {
-			console.log('[PWA] beforeinstallprompt triggered')
 			e.preventDefault()
 			deferredPrompt = e
 			canInstall = true
-			debugInfo += ', CanInstall: true'
 		})
 
 		// Track install event
 		window.addEventListener('appinstalled', () => {
-			console.log('[PWA] appinstalled fired')
 			if (typeof localStorage !== 'undefined') {
 				localStorage.setItem('Read Hentai_installed', '1')
 			}
@@ -87,14 +80,6 @@
 			})
 			showBanner = false
 		})
-
-		// Force show banner for testing (remove this in production)
-		setTimeout(() => {
-			if (!isAlreadyInstalled) {
-				showBanner = true
-				debugInfo += ', ForceShown: true'
-			}
-		}, 1000)
 	})
 
 	// Trigger install prompt
@@ -107,7 +92,6 @@
 
 			;(deferredPrompt as any).prompt()
 			const result = await (deferredPrompt as any).userChoice
-			console.log('[PWA] userChoice:', result)
 
 			if (result.outcome === 'accepted') {
 				trackEvent('pwa_install_accepted', {
@@ -169,14 +153,6 @@
 			{/if}
 
 			<p class="note">🔒 100% safe and verified • ⚡ Faster loading • 🔔 Push notifications</p>
-			
-			<!-- Debug info (remove in production) -->
-			{#if debugInfo}
-				<details class="debug-info">
-					<summary>Debug Info</summary>
-					<p>{debugInfo}</p>
-				</details>
-			{/if}
 		</div>
 	</div>
 {/if}
@@ -270,25 +246,5 @@
 
 	.install-btn:active {
 		transform: translateY(0);
-	}
-
-	.debug-info {
-		margin-top: 1rem;
-		padding: 0.5rem;
-		background-color: rgba(255, 255, 255, 0.1);
-		border-radius: 8px;
-		font-size: 0.75rem;
-		color: #aaa;
-	}
-
-	.debug-info summary {
-		cursor: pointer;
-		font-weight: bold;
-		margin-bottom: 0.25rem;
-	}
-
-	.debug-info p {
-		margin: 0;
-		padding: 0.25rem 0;
 	}
 </style>
