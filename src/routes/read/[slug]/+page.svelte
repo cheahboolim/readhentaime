@@ -7,6 +7,8 @@
 	import RandomPost from '$lib/components/RandomPost.svelte'
 	import ImageErrorRefreshButton from '$lib/components/ImageErrorRefreshButton.svelte'
 	import VisitorAds from '$lib/components/VisitorAds.svelte'
+	import AAdsBanner from '$lib/components/AAdsBanner.svelte'
+	import AAdsMiddleBanner from '$lib/components/AAdsMiddleBanner.svelte'
 	import { goto } from '$app/navigation'
 	import { seo } from '$lib/seo.ts'
 

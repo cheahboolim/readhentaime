@@ -1,9 +1,35 @@
 <script lang="ts">
+	import { onMount, onDestroy } from 'svelte'
+	import { supabase } from '$lib/supabaseClient'
+	import { goto } from '$app/navigation'
+	
 	export let data
 
+	// Get the session data from the server-side load
+	$: ({ session, user } = data)
+
+	let loading = false
+	let authSubscription: any = null
+
+	onMount(async () => {
+		// Since server-side has already verified authentication,
+		// we only need to listen for auth state changes
+		authSubscription = supabase.auth.onAuthStateChange((event, newSession) => {
+			if (event === 'SIGNED_OUT' || !newSession || newSession.user.email !== 'cheahboolim@gmail.com') {
+				goto('/boleng-admin')
+			}
+		})
+	})
+
+	onDestroy(() => {
+		if (authSubscription) {
+			authSubscription.data?.subscription?.unsubscribe()
+		}
+	})
+
 	async function handleSignOut() {
-		await data.supabase.auth.signOut()
-		window.location.href = '/boleng-admin'
+		await supabase.auth.signOut()
+		// Navigation will be handled by the auth state change listener
 	}
 </script>
 
@@ -46,7 +72,7 @@
 				</div>
 				<div class="flex items-center space-x-4">
 					<span class="text-sm text-gray-700 dark:text-gray-300">
-						{data.session?.user?.email}
+						{user?.email || 'Admin'}
 					</span>
 					<button
 						on:click={handleSignOut}

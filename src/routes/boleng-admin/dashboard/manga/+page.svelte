@@ -31,7 +31,7 @@
 		if (selectedIds.length === manga.length) {
 			selectedIds = []
 		} else {
-			selectedIds = manga.map((p) => p.id)
+			selectedIds = manga.map((p: any) => p.id)
 		}
 	}
 

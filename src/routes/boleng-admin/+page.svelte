@@ -3,46 +3,121 @@
 	import { page } from '$app/stores'
 	import { onMount } from 'svelte'
 	import { goto } from '$app/navigation'
-	import { createBrowserClient } from '@supabase/ssr'
-	import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public'
-
-	export let data
+	import { supabase } from '$lib/supabaseClient'
 
 	let email = 'cheahboolim@gmail.com'
 	let password = ''
 	let loading = false
 	let error = ''
-	let supabase: any
 
-	// Initialize Supabase client
-	onMount(() => {
-		supabase = createBrowserClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY)
-		
-		// Check if already logged in as admin
-		supabase.auth.getSession().then(({ data: { session } }) => {
-			if (session && session.user.email === 'cheahboolim@gmail.com') {
+	// Test functions for debugging
+	async function testConnection() {
+		console.log('=== CONNECTION TEST ===')
+		try {
+			const { data, error } = await supabase.auth.getSession()
+			console.log('Connection test result:', { data, error })
+			alert(`Connection test: ${error ? 'FAILED - ' + error.message : 'SUCCESS'}`)
+		} catch (err) {
+			console.error('Connection test error:', err)
+			alert('Connection test FAILED: ' + err.message)
+		}
+	}
+
+	function testEnvironment() {
+		console.log('=== ENVIRONMENT TEST ===')
+		const env = {
+			url: import.meta.env.PUBLIC_SUPABASE_URL,
+			hasKey: !!import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+			mode: import.meta.env.MODE,
+			dev: import.meta.env.DEV
+		}
+		console.log('Environment:', env)
+		alert(`Environment: URL=${env.url ? 'SET' : 'MISSING'}, Key=${env.hasKey ? 'SET' : 'MISSING'}`)
+	}
+
+	// Check if already logged in as admin
+	onMount(async () => {
+		try {
+			const { data: { session } } = await supabase.auth.getSession()
+			const authorizedEmails = ['cheahboolim@gmail.com', 'testuser@gmail.com']
+			if (session && authorizedEmails.includes(session.user.email)) {
 				goto('/boleng-admin/dashboard')
 			}
-		})
+		} catch (err) {
+			console.error('Session check error:', err)
+		}
 	})
 
 	// Handle form submission
 	async function handleSignIn() {
-		if (!supabase) return
-		
 		loading = true
 		error = ''
 
-		const { error: signInError } = await supabase.auth.signInWithPassword({
-			email,
-			password
-		})
+		try {
+			console.log('=== AUTHENTICATION DEBUG ===')
+			console.log('1. Starting sign in process...')
+			console.log('2. Email:', email)
+			console.log('3. Supabase client:', supabase)
+			console.log('4. Environment check:', {
+				url: import.meta.env.PUBLIC_SUPABASE_URL,
+				hasKey: !!import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+			})
+			
+			// Test if supabase client is working
+			console.log('5. Testing Supabase connection...')
+			const { data: testData, error: testError } = await supabase.auth.getSession()
+			console.log('6. Current session test:', { testData, testError })
+			
+			console.log('7. Attempting authentication...')
+			const { data, error: signInError } = await supabase.auth.signInWithPassword({
+				email: email.trim(),
+				password: password
+			})
 
-		if (signInError) {
-			error = signInError.message
-		} else {
-			// Success will be handled by the client-side redirect
-			goto('/boleng-admin/dashboard')
+			console.log('8. Sign in response:', { 
+				data, 
+				error: signInError,
+				hasSession: !!data?.session,
+				hasUser: !!data?.user,
+				userEmail: data?.user?.email
+			})
+
+			if (signInError) {
+				error = `Authentication Error: ${signInError.message}`
+				console.error('9. Sign in error details:', signInError)
+			} else if (data.session && data.user) {
+				console.log('10. Authentication successful!')
+				console.log('11. User details:', {
+					email: data.user.email,
+					id: data.user.id,
+					confirmed: data.user.email_confirmed_at
+				})
+				
+				// Verify the user is authorized (admin or test user)
+				const authorizedEmails = ['cheahboolim@gmail.com', 'testuser@gmail.com']
+				if (authorizedEmails.includes(data.user.email)) {
+					console.log('12. User verified! Email:', data.user.email, 'Attempting redirect...')
+					
+					// Show success message first
+					error = 'Login successful! Redirecting...'
+					
+					console.log('13. Attempting to set session for server-side access...')
+					
+					// Force a page reload to ensure server picks up the session
+					setTimeout(() => {
+						console.log('14. Executing hard redirect with page reload...')
+						window.location.href = '/boleng-admin/dashboard'
+					}, 1000)
+				} else {
+					error = `Unauthorized email: ${data.user.email}`
+				}
+			} else {
+				error = 'Authentication failed: No session or user returned'
+				console.error('9. No session/user in response')
+			}
+		} catch (err) {
+			console.error('10. Exception during sign in:', err)
+			error = `Exception: ${err.message}`
 		}
 		
 		loading = false
@@ -122,10 +197,53 @@
 			</div>
 		</form>
 
+		<!-- Server-side authentication form -->
+		<div class="mt-4">
+			<form method="POST" action="?/signin" class="w-full">
+				<input type="hidden" name="email" value={email} />
+				<input type="hidden" name="password" value={password} />
+				<button
+					type="submit"
+					class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+				>
+					Sign in (Server-side - Try This!)
+				</button>
+			</form>
+		</div>
+
 		<div class="text-center">
 			<a href="/" class="text-sm text-indigo-600 hover:text-indigo-500">
 				← Back to site
 			</a>
+			
+			<!-- Enhanced Debug Panel -->
+			<div class="mt-4 p-4 bg-gray-100 rounded text-xs">
+				<h3 class="font-bold mb-2">Debug Panel</h3>
+				<div class="space-y-2">
+					<button 
+						on:click={async () => {
+							const { data } = await supabase.auth.getSession()
+							console.log('Current session:', data)
+							alert('Check console for session data')
+						}}
+						class="block w-full text-blue-600 underline"
+					>
+						Test Session
+					</button>
+					<button 
+						on:click={testConnection}
+						class="block w-full text-green-600 underline"
+					>
+						Test Connection
+					</button>
+					<button 
+						on:click={testEnvironment}
+						class="block w-full text-purple-600 underline"
+					>
+						Test Environment
+					</button>
+				</div>
+			</div>
 		</div>
 	</div>
 </main>

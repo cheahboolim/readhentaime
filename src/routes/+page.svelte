@@ -2,6 +2,10 @@
 	import SearchBanner from '$lib/components/SearchBanner.svelte'
 	import RandomHome from '$lib/components/RandomHome.svelte'
 	import VisitorAds from '$lib/components/VisitorAds.svelte'
+	import AppInstallBanner from '$lib/components/AppInstallBanner.svelte'
+	import AAdsBanner from '$lib/components/AAdsBanner.svelte'
+	import Coinpoll from '$lib/components/ownads/coinpoll.svelte'
+	import GgBetAds from '$lib/components/ownads/ggbetads.svelte'
 	export let data
 </script>
 
@@ -50,4 +54,24 @@
 	
 	<!-- For You Section -->
 	<RandomHome comics={data.comics} page={data.page} total={data.total} seed={data.seed} />
+	
+	<!-- Responsive Ad Section (after Load More Manga) -->
+	<div class="container mx-auto px-4 py-4">
+		<div class="flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-6">
+			<div class="flex justify-center">
+				<AAdsBanner />
+			</div>
+			<div class="flex justify-center">
+				<Coinpoll />
+			</div>
+			<div class="flex justify-center">
+				<GgBetAds />
+			</div>
+		</div>
+	</div>
+	
+	<!-- App Install Banner (after Load More Manga) -->
+	<div class="container mx-auto px-4 py-2">
+		<AppInstallBanner />
+	</div>
 </main>

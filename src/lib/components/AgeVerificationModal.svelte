@@ -81,7 +81,7 @@
         <!-- Enter button -->
         <button 
           on:click={handleEnter}
-          class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-6 rounded-lg transition-colors duration-200 text-lg"
+          class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-4 px-6 rounded-lg transition-colors duration-200 text-lg"
           aria-label="I am 18 years or older - Enter website"
         >
           Enter

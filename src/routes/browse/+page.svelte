@@ -2,6 +2,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
 	import VisitorAds from '$lib/components/VisitorAds.svelte'
+	import AAdsBanner from '$lib/components/AAdsBanner.svelte'
+	import AAdsMiddleBanner from '$lib/components/AAdsMiddleBanner.svelte'
 
 	export let data
 

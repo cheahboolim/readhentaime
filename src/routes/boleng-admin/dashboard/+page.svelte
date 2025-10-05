@@ -1,5 +1,14 @@
 <script lang="ts">
+	import { onMount } from 'svelte'
+	import { supabase } from '$lib/supabaseClient'
+	
 	export let data
+	
+	$: ({ user } = data || {})
+	let userEmail = user?.email || ''
+	
+	// No need to fetch user again since we have it from layout data
+	// onMount is only needed if we want to do something else
 </script>
 
 <div class="px-4 py-6 sm:px-0">
@@ -29,7 +38,7 @@
 
 			<div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
 				<p class="text-sm text-gray-500 dark:text-gray-400">
-					Logged in as: <strong>{data.session?.user?.email}</strong>
+					Logged in as: <strong>{userEmail || 'Admin'}</strong>
 				</p>
 			</div>
 		</div>

@@ -13,12 +13,16 @@
 	import ConversionDebug from '$lib/components/exoclicks/ConversionDebug.svelte'
 	import AgeVerificationModal from '$lib/components/AgeVerificationModal.svelte'
 	import AdBlockDetector from '$lib/components/AdBlockDetector.svelte'
+	import { supabase } from '$lib/supabaseClient'
 	// ✅ Moved visitor ads to individual pages
 
-	export let data
-
-	// Check if current user is admin (handle missing data gracefully)
-	$: isAdmin = data?.session?.user?.email === 'cheahboolim@gmail.com'
+	// Check if current user is admin using client-side supabase
+	let isAdmin = false
+	
+	onMount(async () => {
+		const { data: { user } } = await supabase.auth.getUser()
+		isAdmin = user?.email === 'cheahboolim@gmail.com'
+	})
 </script>
 
 <svelte:head>
