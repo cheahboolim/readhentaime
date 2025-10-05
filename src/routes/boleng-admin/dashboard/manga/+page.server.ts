@@ -6,7 +6,13 @@ import type { Cookies } from '@sveltejs/kit'
 
 // Helper function to create authenticated supabase client for admin operations
 function createAdminSupabaseClient(cookies: Cookies) {
-	return createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
+	// Use same fallback values as in login page
+	const supabaseUrl = PUBLIC_SUPABASE_URL || 'https://alpzbhtmdlvaitvudare.supabase.co'
+	const supabaseAnonKey = PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFscHpiaHRtZGx2YWl0dnVkYXJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3MjgyNTIsImV4cCI6MjA3NDMwNDI1Mn0.WD5NrdFss6SEz3Bz1P3wE5dYxPWFBtmmi7fxrFT9mv4'
+	
+	console.log('Creating admin client with URL:', !!supabaseUrl, 'Key:', !!supabaseAnonKey)
+	
+	return createServerClient(supabaseUrl, supabaseAnonKey, {
 		cookies: {
 			get: (key) => cookies.get(key),
 			set: (key, value, options) => cookies.set(key, value, { path: '/', ...options }),
@@ -105,13 +111,31 @@ export const actions: Actions = {
 	deletePost: async ({ request, cookies }) => {
 		const supabase = createAdminSupabaseClient(cookies)
 
+		console.log('=== MANGA DELETION DEBUG ===')
+		console.log('Available cookies:', cookies.getAll())
+
 		// Check if user is authenticated admin
 		const {
-			data: { session }
+			data: { session },
+			error: sessionError
 		} = await supabase.auth.getSession()
-		if (!session || session.user.email !== 'cheahboolim@gmail.com') {
+		
+		console.log('Session retrieval result:', {
+			hasSession: !!session,
+			sessionError: sessionError?.message,
+			userEmail: session?.user?.email,
+			userId: session?.user?.id
+		})
+		
+		// Check if user is authorized (same emails as login page)
+		const authorizedEmails = ['cheahboolim@gmail.com', 'testuser@gmail.com']
+		if (!session || !session.user?.email || !authorizedEmails.includes(session.user.email)) {
+			console.log('Unauthorized deletion attempt from:', session?.user?.email)
+			console.log('Session details:', session)
 			return fail(401, { message: 'Unauthorized access.' })
 		}
+
+		console.log('Authorization successful for:', session.user.email)
 
 		const formData = await request.formData()
 		const id = formData.get('id') as string
