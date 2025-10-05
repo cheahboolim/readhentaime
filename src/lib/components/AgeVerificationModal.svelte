@@ -55,14 +55,18 @@
   <div 
     class="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4"
     on:click={handleBackdropClick}
+    on:keydown={(e) => e.key === 'Escape' && handleBackdropClick()}
     role="dialog"
     aria-modal="true"
     aria-labelledby="age-verification-title"
+    tabindex="-1"
   >
     <!-- Modal content -->
     <div 
       class="bg-slate-800 rounded-lg p-8 max-w-md w-full mx-auto text-center shadow-2xl border border-slate-600"
       on:click|stopPropagation
+      on:keydown|stopPropagation
+      role="document"
     >
       <!-- Title -->
       <h2 id="age-verification-title" class="text-2xl font-bold text-white mb-6">
