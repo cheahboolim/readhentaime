@@ -1,21 +1,35 @@
 {
-  "name": "Read HentaiPics",
-  "short_name": "Read HentaiPics",
-  "description": "Read Hentai.Pic - Read Hentai Pictures, Manga and Doujinshi Search Engine, Free and Safe.",
+  "name": "Read Hentai",
+  "short_name": "ReadHentai",
+  "description": "Read Hentai - Best Hentai Pictures, Manga and Doujinshi Search Engine, Free and Safe.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0d1117",
-  "theme_color": "#0d1117",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
   "icons": [
     {
-      "src": "{import.meta.env.PUBLIC_CDN_BASE_URL}/favicon/android-chrome-192x192.jpg",
+      "src": "/pwa-icon-192.jpg",
       "sizes": "192x192",
-      "type": "image/jpg"
+      "type": "image/jpeg",
+      "purpose": "any maskable"
     },
     {
-      "src": "{import.meta.env.PUBLIC_CDN_BASE_URL}/favicon/android-chrome-512x512.jpg",
+      "src": "/pwa-icon-512.jpg",
       "sizes": "512x512",
-      "type": "image/jpg"
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["entertainment", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "/pwa-icon-512.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "form_factor": "wide"
     }
   ]
 }

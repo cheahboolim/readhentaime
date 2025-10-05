@@ -2,15 +2,20 @@
 	import { page } from '$app/stores'
 	import { goto } from '$app/navigation'
 	import { onMount } from 'svelte'
-	import { Menu, X, Search } from 'lucide-svelte'
+	import { Menu, X, Search, Smartphone } from 'lucide-svelte'
 	import { writable, get } from 'svelte/store'
+	import { trackEvent } from '$lib/gtm'
 
 	let search = ''
 	let isMobile = false
 	const mobileMenuOpen = writable(false)
+	
+	// PWA Install functionality
+	let deferredPrompt: Event | null = null
+	let canInstall = false
+	let isAlreadyInstalled = false
 
 	const navItems = [
-		{ title: 'Random', href: '/random', special: true },
 		{ title: 'Tags', href: '/p/tags', mobileTitle: 'Tags' },
 		{ title: 'Parodies', href: '/p/parodies', mobileTitle: 'Parodies' },
 		{ title: 'Characters', href: '/p/characters', mobileTitle: 'Characters' },
@@ -32,8 +37,71 @@
 		mobileMenuOpen.set(false)
 	}
 
-	function navigateToRandom() {
-		window.location.href = '/random'
+	// PWA Install Functions
+	function checkIfInstalled(): boolean {
+		// Check if already installed via localStorage
+		if (
+			typeof localStorage !== 'undefined' &&
+			localStorage.getItem('Read Hentai_installed') === '1'
+		) {
+			return true
+		}
+
+		// Check if running in standalone mode (PWA is installed)
+		if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
+			return true
+		}
+
+		// Check for iOS PWA
+		if ('standalone' in window.navigator && (window.navigator as any).standalone) {
+			return true
+		}
+
+		return false
+	}
+
+	async function handleInstallApp() {
+		if (isAlreadyInstalled) {
+			// If already installed, redirect to random page as fallback
+			window.location.href = '/random'
+			return
+		}
+
+		if (deferredPrompt && canInstall) {
+			// Use the deferred prompt for installation
+			try {
+				trackEvent('pwa_install_nav_clicked', {
+					category: 'PWA',
+					label: 'Navigation Install Button'
+				})
+
+				;(deferredPrompt as any).prompt()
+				const result = await (deferredPrompt as any).userChoice
+				
+				if (result.outcome === 'accepted') {
+					trackEvent('pwa_install_accepted_nav', {
+						category: 'PWA',
+						label: 'Install Accepted from Navigation'
+					})
+				} else {
+					trackEvent('pwa_install_dismissed_nav', {
+						category: 'PWA',
+						label: 'Install Dismissed from Navigation'
+					})
+				}
+
+				deferredPrompt = null
+				canInstall = false
+			} catch (error) {
+				console.error('Install prompt failed:', error)
+				// Fallback to random page
+				window.location.href = '/random'
+			}
+		} else {
+			// No install prompt available - redirect to random as fallback
+			window.location.href = '/random'
+		}
+		
 		closeMobileMenu()
 	}
 
@@ -48,6 +116,30 @@
 
 		updateMobile()
 		window.addEventListener('resize', updateMobile)
+
+		// Check if PWA is already installed
+		isAlreadyInstalled = checkIfInstalled()
+
+		// Listen for install prompt
+		window.addEventListener('beforeinstallprompt', (e) => {
+			console.log('[MainNav] beforeinstallprompt triggered')
+			e.preventDefault()
+			deferredPrompt = e
+			canInstall = true
+		})
+
+		// Track when app gets installed
+		window.addEventListener('appinstalled', () => {
+			console.log('[MainNav] appinstalled fired')
+			if (typeof localStorage !== 'undefined') {
+				localStorage.setItem('Read Hentai_installed', '1')
+			}
+			isAlreadyInstalled = true
+			trackEvent('pwa_installed_nav', {
+				category: 'PWA',
+				label: 'App Installed via Navigation'
+			})
+		})
 
 		const unsub = mobileMenuOpen.subscribe((open) => {
 			if (typeof document !== 'undefined') {
@@ -141,14 +233,22 @@
 
 					<!-- Desktop Navigation -->
 					<nav class="flex items-center space-x-1 lg:space-x-2">
+						<!-- Install App Button -->
+						<button
+							type="button"
+							on:click={handleInstallApp}
+							class="bg-[#FF1493] hover:bg-[#e01382] text-white px-3 lg:px-4 py-2 rounded text-sm lg:text-base transition-colors whitespace-nowrap flex items-center gap-1 lg:gap-2"
+							title={isAlreadyInstalled ? 'Go to Random Page' : 'Install App'}
+						>
+							<Smartphone class="w-3 h-3 lg:w-4 lg:h-4" />
+							<span class="hidden sm:inline">{isAlreadyInstalled ? 'Random' : 'Install App'}</span>
+							<span class="sm:hidden">App</span>
+						</button>
+						
 						{#each navItems as item}
 							<a href={item.href} class="flex-shrink-0">
 								<button
-									class={`${
-										item.special
-											? 'bg-[#FF1493] hover:bg-[#e01382] text-white'
-											: 'text-foreground/80 hover:text-foreground hover:bg-white/5'
-									} px-3 lg:px-4 py-2 rounded text-sm lg:text-base transition-colors whitespace-nowrap`}
+									class="text-foreground/80 hover:text-foreground hover:bg-white/5 px-3 lg:px-4 py-2 rounded text-sm lg:text-base transition-colors whitespace-nowrap"
 								>
 									{item.title}
 								</button>
@@ -192,14 +292,16 @@
 
 			<!-- Menu Content -->
 			<div class="flex-1 overflow-y-auto p-4">
-				<!-- Random Button -->
+				<!-- Install App Button -->
 				<div class="mb-6">
 					<button
 						type="button"
-						class="w-full bg-[#FF1493] hover:bg-[#e01382] text-white px-6 py-3 rounded-lg text-center transition-colors text-base font-medium"
-						on:click={navigateToRandom}
+						class="w-full bg-[#FF1493] hover:bg-[#e01382] text-white px-6 py-3 rounded-lg text-center transition-colors text-base font-medium flex items-center justify-center gap-2"
+						on:click={handleInstallApp}
+						title={isAlreadyInstalled ? 'Go to Random Page' : 'Install Our App'}
 					>
-						Random
+						<Smartphone class="w-5 h-5" />
+						{isAlreadyInstalled ? 'Random' : 'Install App'}
 					</button>
 				</div>
 
@@ -224,7 +326,7 @@
 
 				<!-- Navigation Links -->
 				<nav class="space-y-1">
-					{#each navItems.slice(1) as item}
+					{#each navItems as item}
 						<button
 							type="button"
 							class="w-full text-left text-white/90 hover:text-white hover:bg-white/5 transition-colors rounded-lg {get(
