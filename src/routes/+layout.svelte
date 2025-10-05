@@ -17,8 +17,8 @@
 
 	export let data
 
-	// Check if current user is admin
-	$: isAdmin = data.session?.user?.email === 'cheahboolim@gmail.com'
+	// Check if current user is admin (handle missing data gracefully)
+	$: isAdmin = data?.session?.user?.email === 'cheahboolim@gmail.com'
 </script>
 
 <svelte:head>

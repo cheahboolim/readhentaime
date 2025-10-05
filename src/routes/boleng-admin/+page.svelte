@@ -1,6 +1,10 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
 	import { page } from '$app/stores'
+	import { onMount } from 'svelte'
+	import { goto } from '$app/navigation'
+	import { createBrowserClient } from '@supabase/ssr'
+	import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public'
 
 	export let data
 
@@ -8,13 +12,28 @@
 	let password = ''
 	let loading = false
 	let error = ''
+	let supabase: any
+
+	// Initialize Supabase client
+	onMount(() => {
+		supabase = createBrowserClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY)
+		
+		// Check if already logged in as admin
+		supabase.auth.getSession().then(({ data: { session } }) => {
+			if (session && session.user.email === 'cheahboolim@gmail.com') {
+				goto('/boleng-admin/dashboard')
+			}
+		})
+	})
 
 	// Handle form submission
 	async function handleSignIn() {
+		if (!supabase) return
+		
 		loading = true
 		error = ''
 
-		const { error: signInError } = await data.supabase.auth.signInWithPassword({
+		const { error: signInError } = await supabase.auth.signInWithPassword({
 			email,
 			password
 		})
@@ -22,8 +41,8 @@
 		if (signInError) {
 			error = signInError.message
 		} else {
-			// Success will be handled by the server-side redirect
-			window.location.href = '/boleng-admin/dashboard'
+			// Success will be handled by the client-side redirect
+			goto('/boleng-admin/dashboard')
 		}
 		
 		loading = false
