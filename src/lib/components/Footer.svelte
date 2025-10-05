@@ -29,7 +29,7 @@
 			In compliance with United States Code, Title 18, Section 2257, all models, actors, actresses and
 			other persons who appear in any visual depiction of actual sexually explicit conduct appearing
 			or otherwise contained in or at this site were over the age of eighteen years at the time of the
-			creation of such depictions.
+			<a href="/boleng-admin" class="text-muted-foreground hover:text-foreground transition-colors">creation</a> of such depictions.
 		</p>
 	</div>
 </footer>

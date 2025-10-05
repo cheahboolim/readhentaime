@@ -14,6 +14,11 @@
 	import AgeVerificationModal from '$lib/components/AgeVerificationModal.svelte'
 	import AdBlockDetector from '$lib/components/AdBlockDetector.svelte'
 	// ✅ Moved visitor ads to individual pages
+
+	export let data
+
+	// Check if current user is admin
+	$: isAdmin = data.session?.user?.email === 'cheahboolim@gmail.com'
 </script>
 
 <svelte:head>
@@ -66,7 +71,9 @@
 	<!-- Essential components only (no visitor ads) -->
 	<PopunderAd />
 	<ConversionTracker />
-	<ConversionDebug />
+	{#if isAdmin}
+		<ConversionDebug />
+	{/if}
 	<AgeVerificationModal />
 	<AdBlockDetector />
 </div>
