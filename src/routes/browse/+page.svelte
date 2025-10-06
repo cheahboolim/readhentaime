@@ -4,6 +4,8 @@
 	import VisitorAds from '$lib/components/VisitorAds.svelte'
 	import AAdsBanner from '$lib/components/AAdsBanner.svelte'
 	import AAdsMiddleBanner from '$lib/components/AAdsMiddleBanner.svelte'
+	import Coinpoll from '$lib/components/ownads/coinpoll.svelte'
+	import GgBetAds from '$lib/components/ownads/ggbetads.svelte'
 
 	export let data
 
@@ -231,9 +233,19 @@
 		</section>
 	{/if}
 
-	<!-- Bottom Ad -->
-	<div class="mt-12">
-		<AAdsBanner />
+	<!-- Bottom Ad Trio -->
+	<div class="container mx-auto px-4 py-4 mt-8">
+		<div class="flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-6">
+			<div class="flex justify-center">
+				<AAdsBanner />
+			</div>
+			<div class="flex justify-center">
+				<Coinpoll />
+			</div>
+			<div class="flex justify-center">
+				<GgBetAds />
+			</div>
+		</div>
 	</div>
 
 	<!-- Native Ads -->

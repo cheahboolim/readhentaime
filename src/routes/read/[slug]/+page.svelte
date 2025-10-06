@@ -279,7 +279,7 @@
 		<!-- Enhanced "About This Manga" Section -->
 		<section class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
 			<h2 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">
-				Read Full {comic.title} HentaiRead.Me All Chapters
+				Read Full {comic.title} ReadHentai.Me All Chapters
 			</h2>
 			<div class="prose prose-sm max-w-none text-gray-700 dark:text-gray-300">
 				<p class="mb-4">

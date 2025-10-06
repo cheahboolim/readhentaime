@@ -257,7 +257,10 @@ export const actions: Actions = {
 		const {
 			data: { session }
 		} = await supabase.auth.getSession()
-		if (!session || session.user.email !== 'cheahboolim@gmail.com') {
+		
+		// Check if user is authorized (same emails as login page)
+		const authorizedEmails = ['cheahboolim@gmail.com', 'testuser@gmail.com']
+		if (!session || !session.user?.email || !authorizedEmails.includes(session.user.email)) {
 			return fail(401, { message: 'Unauthorized access.' })
 		}
 
@@ -349,7 +352,10 @@ export const actions: Actions = {
 		const {
 			data: { session }
 		} = await supabase.auth.getSession()
-		if (!session || session.user.email !== 'cheahboolim@gmail.com') {
+		
+		// Check if user is authorized (same emails as login page)
+		const authorizedEmails = ['cheahboolim@gmail.com', 'testuser@gmail.com']
+		if (!session || !session.user?.email || !authorizedEmails.includes(session.user.email)) {
 			return fail(401, { message: 'Unauthorized access.' })
 		}
 

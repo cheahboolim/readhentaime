@@ -1,56 +1,56 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { page } from '$app/stores';
-	import type { ActionData, PageData } from './$types';
+	import { enhance } from '$app/forms'
+	import { page } from '$app/stores'
+	import type { ActionData, PageData } from './$types'
 
-	export let data: PageData;
-	export let form: ActionData; // This prop receives the return value from server actions
+	export let data: PageData
+	export let form: ActionData // This prop receives the return value from server actions
 
 	// --- THE CRITICAL FIX ---
 	// Use a reactive declaration ($:) to destructure the data prop.
 	// This ensures these variables automatically update whenever 'data' changes.
-	$: ({ manga, count, tags } = data);
+	$: ({ manga, count, tags } = data)
 
-	let selectedIds: string[] = [];
-	let editingId: string | null = null;
-	let newTitle = '';
+	let selectedIds: string[] = []
+	let editingId: string | null = null
+	let newTitle = ''
 
 	// This reactive block handles clearing selections when the data reloads after any action
 	$: if (manga) {
-		selectedIds = [];
-		editingId = null;
+		selectedIds = []
+		editingId = null
 	}
 
 	// This reactive block shows a feedback message after a form action (delete/update) completes.
 	// This is the idiomatic SvelteKit way to handle action results.
 	$: if (form?.message) {
-		alert(form.message); // You can replace this with a toast notification
+		alert(form.message) // You can replace this with a toast notification
 	}
 
 	function toggleSelectAll() {
 		if (selectedIds.length === manga.length) {
-			selectedIds = [];
+			selectedIds = []
 		} else {
-			selectedIds = manga.map((p) => p.id);
+			selectedIds = manga.map((p: any) => p.id)
 		}
 	}
 
 	function startEditing(post: (typeof manga)[0]) {
-		editingId = post.id;
-		newTitle = post.title;
+		editingId = post.id
+		newTitle = post.title
 	}
 
 	function cancelEditing() {
-		editingId = null;
+		editingId = null
 	}
 </script>
 
 <svelte:head>
-	<title>Manga Management</title>
+	<title>Admin - Manga Management</title>
 </svelte:head>
 
 <div class="container">
-	<h1>Manga Post Management</h1>
+	<h1>Manga Management</h1>
 
 	<div class="filter-bar">
 		<!-- This form uses a standard GET request. SvelteKit automatically handles it -->

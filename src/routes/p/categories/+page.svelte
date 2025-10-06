@@ -3,6 +3,9 @@
 	import { seo } from '$lib/seo.ts'
 	import { onMount } from 'svelte'
 	import VisitorAds from '$lib/components/VisitorAds.svelte'
+	import AAdsBanner from '$lib/components/AAdsBanner.svelte'
+	import Coinpoll from '$lib/components/ownads/coinpoll.svelte'
+	import GgBetAds from '$lib/components/ownads/ggbetads.svelte'
 
 	export let data: {
 		grouped: Record<string, { id: number; name: string; slug: string | null }[]>
@@ -91,6 +94,10 @@
 			Discover hentai categories from our collection of {data.totalCategories} categories, organized
 			alphabetically. Find content by genre, theme, and more.
 		</p>
+
+		<!-- Visitor Ads -->
+		<VisitorAds />
+
 		<div
 			class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4"
 		>

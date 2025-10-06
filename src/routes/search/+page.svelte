@@ -1,5 +1,8 @@
 <script lang="ts">
 	import VisitorAds from '$lib/components/VisitorAds.svelte'
+	import AAdsBanner from '$lib/components/AAdsBanner.svelte'
+	import Coinpoll from '$lib/components/ownads/coinpoll.svelte'
+	import GgBetAds from '$lib/components/ownads/ggbetads.svelte'
 	export let data: {
 		query: string
 		comics: {
@@ -21,8 +24,6 @@
 			next: string | null
 		}
 	}
-
-	import TrafficStarsAd from '$lib/components/TrafficStarsAd.svelte'
 
 	// Helper function to highlight matching terms
 	function highlightMatch(text: string, query: string): string {
@@ -251,4 +252,19 @@
 			</div>
 		{/if}
 	{/if}
+
+	<!-- Bottom Ad Trio -->
+	<div class="container mx-auto px-4 py-4 mt-8">
+		<div class="flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-6">
+			<div class="flex justify-center">
+				<AAdsBanner />
+			</div>
+			<div class="flex justify-center">
+				<Coinpoll />
+			</div>
+			<div class="flex justify-center">
+				<GgBetAds />
+			</div>
+		</div>
+	</div>
 </main>

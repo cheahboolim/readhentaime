@@ -6,7 +6,6 @@
 	import { seo } from '$lib/seo.ts'
 	import SimilarManga from '$lib/components/SimilarManga.svelte'
 	import RandomPost from '$lib/components/RandomPost.svelte'
-	import TrafficStarsAd from '$lib/components/TrafficStarsAd.svelte'
 	import AAdsMiddleBanner from '$lib/components/AAdsMiddleBanner.svelte'
 
 	import AAdsBanner from '$lib/components/AAdsBanner.svelte'

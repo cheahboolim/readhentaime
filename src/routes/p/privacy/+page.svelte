@@ -1,4 +1,8 @@
 <script>
+	import VisitorAds from '$lib/components/VisitorAds.svelte'
+	import AAdsBanner from '$lib/components/AAdsBanner.svelte'
+	import Coinpoll from '$lib/components/ownads/coinpoll.svelte'
+	import GgBetAds from '$lib/components/ownads/ggbetads.svelte'
 	// No scripting needed
 </script>
 
@@ -6,6 +10,9 @@
 	<h1 class="text-4xl font-bold mb-6">Privacy Policy</h1>
 
 	<p class="mb-6 text-muted-foreground">Last updated: June 16, 2025</p>
+
+	<!-- Visitor Ads -->
+	<VisitorAds />
 
 	<section class="space-y-6 text-base leading-relaxed">
 		<div>
@@ -86,4 +93,19 @@
 			</p>
 		</div>
 	</section>
+
+	<!-- Bottom Ad Trio -->
+	<div class="container mx-auto px-4 py-4 mt-8">
+		<div class="flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-6">
+			<div class="flex justify-center">
+				<AAdsBanner />
+			</div>
+			<div class="flex justify-center">
+				<Coinpoll />
+			</div>
+			<div class="flex justify-center">
+				<GgBetAds />
+			</div>
+		</div>
+	</div>
 </main>

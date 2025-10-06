@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { seo } from '$lib/seo.ts'
-
-	import TrafficStarsAd from '$lib/components/TrafficStarsAd.svelte'
 	import { page } from '$app/stores'
+	import VisitorAds from '$lib/components/VisitorAds.svelte'
+	import AAdsBanner from '$lib/components/AAdsBanner.svelte'
+	import Coinpoll from '$lib/components/ownads/coinpoll.svelte'
+	import GgBetAds from '$lib/components/ownads/ggbetads.svelte'
 
 	export let data: {
 		type: string
@@ -206,7 +208,7 @@
 		<!-- Enhanced SEO Content Section -->
 		<div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 mb-6">
 			<h2 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">
-				Read Full {data.name} | HentaiRead.Me
+				Read Full {data.name} | ReadHentai.Me
 				{data.typeLabel}
 			</h2>
 			<div class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed space-y-2">
@@ -291,6 +293,9 @@
 				{/if}
 			</div>
 		</div>
+
+		<!-- Visitor Ads -->
+		<VisitorAds />
 
 		<!-- FIXED Share Section -->
 		<div
@@ -510,8 +515,20 @@
 		</nav>
 	{/if}
 
-	<!-- Ad Placements -->
-	<div class="mt-12 space-y-8"></div>
+	<!-- Bottom Ad Trio -->
+	<div class="container mx-auto px-4 py-4 mt-8">
+		<div class="flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-6">
+			<div class="flex justify-center">
+				<AAdsBanner />
+			</div>
+			<div class="flex justify-center">
+				<Coinpoll />
+			</div>
+			<div class="flex justify-center">
+				<GgBetAds />
+			</div>
+		</div>
+	</div>
 </main>
 
 <!-- FIXED: Close share dropdown when clicking outside -->
