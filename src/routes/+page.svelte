@@ -6,6 +6,7 @@
 	import AAdsBanner from '$lib/components/AAdsBanner.svelte'
 	import Coinpoll from '$lib/components/ownads/coinpoll.svelte'
 	import GgBetAds from '$lib/components/ownads/ggbetads.svelte'
+	import PopunderAd from '$lib/components/exoclicks/PopunderAd.svelte'
 	export let data
 </script>
 
@@ -74,4 +75,7 @@
 	<div class="container mx-auto px-4 py-2">
 		<AppInstallBanner />
 	</div>
+
+<!-- Popunder Ad for Homepage -->
+<PopunderAd />
 </main>

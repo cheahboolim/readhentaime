@@ -3,6 +3,7 @@
 	import AAdsBanner from '$lib/components/AAdsBanner.svelte'
 	import Coinpoll from '$lib/components/ownads/coinpoll.svelte'
 	import GgBetAds from '$lib/components/ownads/ggbetads.svelte'
+	import PopunderAd from '$lib/components/exoclicks/PopunderAd.svelte'
 	export let data: {
 		query: string
 		comics: {
@@ -268,3 +269,6 @@
 		</div>
 	</div>
 </main>
+
+<!-- Popunder Ad for Search Page -->
+<PopunderAd />

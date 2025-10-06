@@ -8,7 +8,6 @@
 	import { seo } from '$lib/seo'
 	import MainNav from '$lib/components/MainNav.svelte'
 	import Footer from '$lib/components/Footer.svelte'
-	import PopunderAd from '$lib/components/exoclicks/PopunderAd.svelte'
 	import ConversionTracker from '$lib/components/exoclicks/ConversionTracker.svelte'
 	import ConversionDebug from '$lib/components/exoclicks/ConversionDebug.svelte'
 	import AgeVerificationModal from '$lib/components/AgeVerificationModal.svelte'
@@ -73,7 +72,6 @@
 	<Footer />
 	
 	<!-- Essential components only (no visitor ads) -->
-	<PopunderAd />
 	<ConversionTracker />
 	{#if isAdmin}
 		<ConversionDebug />

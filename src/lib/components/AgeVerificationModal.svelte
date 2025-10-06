@@ -7,16 +7,27 @@
   onMount(() => {
     if (!browser) return;
 
+    // Debug: Log current state
+    console.log('Age verification check:', {
+      browser,
+      hasVerified: localStorage.getItem('age_verified'),
+      timestamp: Date.now()
+    });
+
     // Check if user has already verified their age
     const hasVerified = localStorage.getItem('age_verified');
     
     if (!hasVerified) {
+      console.log('Age verification: Will show modal in 500ms');
       // Small delay to ensure page is loaded
       setTimeout(() => {
+        console.log('Age verification: Showing modal now');
         showModal = true;
         // Prevent body scrolling when modal is open
         document.body.classList.add('modal-open');
       }, 500);
+    } else {
+      console.log('Age verification: User already verified, skipping modal');
     }
   });
 

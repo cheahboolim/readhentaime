@@ -9,6 +9,7 @@
 	import VisitorAds from '$lib/components/VisitorAds.svelte'
 	import AAdsBanner from '$lib/components/AAdsBanner.svelte'
 	import AAdsMiddleBanner from '$lib/components/AAdsMiddleBanner.svelte'
+	import PopunderAd from '$lib/components/exoclicks/PopunderAd.svelte'
 	import { goto } from '$app/navigation'
 	import { seo } from '$lib/seo.ts'
 
@@ -355,6 +356,9 @@
 
 	<div class="mt-12"></div>
 </main>
+
+<!-- Popunder Ad for Read/Gallery Page -->
+<PopunderAd />
 
 <!-- FIXED: Close share dropdown when clicking outside -->
 <svelte:window

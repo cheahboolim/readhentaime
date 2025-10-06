@@ -6,6 +6,7 @@
 	import AAdsMiddleBanner from '$lib/components/AAdsMiddleBanner.svelte'
 	import Coinpoll from '$lib/components/ownads/coinpoll.svelte'
 	import GgBetAds from '$lib/components/ownads/ggbetads.svelte'
+	import PopunderAd from '$lib/components/exoclicks/PopunderAd.svelte'
 
 	export let data
 
@@ -251,6 +252,9 @@
 	<!-- Native Ads -->
 	<div class="mt-8"></div>
 </main>
+
+<!-- Popunder Ad for Browse Page -->
+<PopunderAd />
 
 <style>
 	.line-clamp-2 {

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
 	import { page } from '$app/stores'
+	import PopunderAd from '$lib/components/exoclicks/PopunderAd.svelte'
 	import type { ActionData, PageData } from './$types'
 
 	export let data: PageData
@@ -373,3 +374,6 @@
 		gap: 1rem;
 	}
 </style>
+
+<!-- Popunder Ad for Manga Listing Page -->
+<PopunderAd />
