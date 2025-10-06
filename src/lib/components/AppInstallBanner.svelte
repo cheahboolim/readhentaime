@@ -62,15 +62,20 @@
 			return
 		}
 
-		// Prepare install prompt if supported
+		// Check if PWA installation is supported
+		const isPWASupported = 'serviceWorker' in navigator && 'manifest' in document.createElement('link')
+
+		// Prepare install prompt if supported (Chrome/Edge on Android)
 		window.addEventListener('beforeinstallprompt', (e) => {
 			e.preventDefault()
 			deferredPrompt = e
 			canInstall = true
+			console.log('Native PWA install prompt available')
 		})
 
 		// Track install event
 		window.addEventListener('appinstalled', () => {
+			console.log('PWA installed successfully')
 			if (typeof localStorage !== 'undefined') {
 				localStorage.setItem('Read Hentai_installed', '1')
 			}
@@ -80,33 +85,80 @@
 			})
 			showBanner = false
 		})
+
+		// Log PWA support status
+		console.log('PWA Support:', {
+			serviceWorker: 'serviceWorker' in navigator,
+			manifest: 'manifest' in document.createElement('link'),
+			beforeInstallPrompt: 'onbeforeinstallprompt' in window,
+			standalone: window.matchMedia('(display-mode: standalone)').matches,
+			os: os,
+			canInstall: canInstall
+		})
 	})
 
-	// Trigger install prompt
+	// Trigger install prompt - works on all devices
 	async function promptInstall() {
+		trackEvent('pwa_install_prompt_clicked', {
+			category: 'PWA',
+			label: 'Install Button Clicked'
+		})
+
+		// Method 1: Use native install prompt if available (Chrome/Edge on Android)
 		if (deferredPrompt) {
-			trackEvent('pwa_install_prompt_clicked', {
-				category: 'PWA',
-				label: 'Install Button Clicked'
-			})
+			try {
+				;(deferredPrompt as any).prompt()
+				const result = await (deferredPrompt as any).userChoice
 
-			;(deferredPrompt as any).prompt()
-			const result = await (deferredPrompt as any).userChoice
+				if (result.outcome === 'accepted') {
+					trackEvent('pwa_install_accepted', {
+						category: 'PWA',
+						label: 'Install Accepted'
+					})
+					showBanner = false
+				} else {
+					trackEvent('pwa_install_dismissed', {
+						category: 'PWA',
+						label: 'Install Dismissed'
+					})
+				}
 
-			if (result.outcome === 'accepted') {
-				trackEvent('pwa_install_accepted', {
+				deferredPrompt = null
+				canInstall = false
+				return
+			} catch (error) {
+				console.log('Native install prompt failed, trying fallback')
+			}
+		}
+
+		// Method 2: Fallback for browsers without beforeinstallprompt (Safari, Firefox, etc.)
+		try {
+			// For iOS Safari
+			if (os === 'iOS') {
+				alert('To install: Tap the Share button (📤) → "Add to Home Screen" → "Add"')
+				trackEvent('pwa_install_ios_instructions', {
 					category: 'PWA',
-					label: 'Install Accepted'
-				})
-			} else {
-				trackEvent('pwa_install_dismissed', {
-					category: 'PWA',
-					label: 'Install Dismissed'
+					label: 'iOS Instructions Shown'
 				})
 			}
-
-			deferredPrompt = null
-			canInstall = false
+			// For Android browsers without native prompt
+			else if (os === 'Android') {
+				alert('To install: Tap the menu (⋮) → "Add to Home Screen" or "Install App"')
+				trackEvent('pwa_install_android_instructions', {
+					category: 'PWA',
+					label: 'Android Instructions Shown'
+				})
+			}
+			// For desktop
+			else {
+				alert('To install: Click the install icon in your browser\'s address bar, or use the browser menu')
+				trackEvent('pwa_install_desktop_instructions', {
+					category: 'PWA',
+					label: 'Desktop Instructions Shown'
+				})
+			}
+		} catch (error) {
+			console.log('Install instructions failed to show')
 		}
 	}
 
@@ -144,13 +196,10 @@
 			<h2 class="title">❤️ Love Read Hentai? Get our app!</h2>
 			<p class="subtitle">Download app for {os}</p>
 
-			{#if canInstall}
-				<button on:click={promptInstall} class="install-btn">
-					📱 Install on {os}
-				</button>
-			{:else}
-				<p class="instructions">{getInstallInstructions(os)}</p>
-			{/if}
+			<!-- Always show install button - works on all devices -->
+			<button on:click={promptInstall} class="install-btn">
+				📱 Install on {os}
+			</button>
 
 			<p class="note">🔒 100% safe and verified • ⚡ Faster loading • 🔔 Push notifications</p>
 		</div>
