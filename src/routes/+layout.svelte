@@ -10,7 +10,7 @@
 	import Footer from '$lib/components/Footer.svelte'
 	import ConversionTracker from '$lib/components/exoclicks/ConversionTracker.svelte'
 	import ConversionDebug from '$lib/components/exoclicks/ConversionDebug.svelte'
-	import AgeVerificationModal from '$lib/components/AgeVerificationModal.svelte'
+	// import AgeVerificationModal from '$lib/components/AgeVerificationModal.svelte'
 	import AdBlockDetector from '$lib/components/AdBlockDetector.svelte'
 	import { supabase } from '$lib/supabaseClient'
 	// ✅ Moved visitor ads to individual pages
@@ -76,6 +76,6 @@
 	{#if isAdmin}
 		<ConversionDebug />
 	{/if}
-	<AgeVerificationModal />
+	<!-- <AgeVerificationModal /> -->
 	<AdBlockDetector />
 </div>
