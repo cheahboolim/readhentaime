@@ -3,7 +3,7 @@
 	import RandomHome from '$lib/components/RandomHome.svelte'
 	import VisitorAds from '$lib/components/VisitorAds.svelte'
 	import AppInstallBanner from '$lib/components/AppInstallBanner.svelte'
-	import AAdsBanner from '$lib/components/AAdsBanner.svelte'
+	import AAdsBanner from '$lib/components/aads/AAdsBanner.svelte'
 	import Coinpoll from '$lib/components/ownads/coinpoll.svelte'
 	import GgBetAds from '$lib/components/ownads/ggbetads.svelte'
 	import PopunderAd from '$lib/components/exoclicks/PopunderAd.svelte'

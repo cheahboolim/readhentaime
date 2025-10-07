@@ -5,6 +5,7 @@
 	import { Menu, X, Search, Smartphone } from 'lucide-svelte'
 	import { writable, get } from 'svelte/store'
 	import { trackEvent } from '$lib/gtm'
+	import BookmarkButton from './BookmarkButton.svelte'
 
 	let search = ''
 	let isMobile = false
@@ -230,6 +231,9 @@
 
 					<!-- Desktop Navigation -->
 					<nav class="flex items-center space-x-1 lg:space-x-2">
+						<!-- Bookmark Button -->
+						<BookmarkButton size="small" variant="secondary" />
+						
 						<!-- Install App Button -->
 						<button
 							type="button"

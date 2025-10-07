@@ -12,7 +12,7 @@
 	import BannerAd from '$lib/components/adsterra/BannerAd.svelte';
 	import BlueBallsAd from '$lib/components/ownads/BlueBallsAd.svelte';
 	import AppInstallBanner from '$lib/components/AppInstallBanner.svelte';
-	import AAdsBanner from '$lib/components/AAdsBanner.svelte';
+	import AAdsBanner from '$lib/components/aads/AAdsBanner.svelte';
 	import ExoClickSlider from '$lib/components/ExoClickSlider.svelte';
 	import ExoOutstreamAd from '$lib/components/ExoOutstreamAd.svelte';
 	import Coinpoll from '$lib/components/ownads/coinpoll.svelte'

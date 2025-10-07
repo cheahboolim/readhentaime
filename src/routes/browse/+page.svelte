@@ -2,8 +2,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
 	import VisitorAds from '$lib/components/VisitorAds.svelte'
-	import AAdsBanner from '$lib/components/AAdsBanner.svelte'
-	import AAdsMiddleBanner from '$lib/components/AAdsMiddleBanner.svelte'
+	import AAdsBanner from '$lib/components/aads/AAdsBanner.svelte'
+	import AAdsMiddleBanner from '$lib/components/aads/AAdsMiddleBanner.svelte'
 	import Coinpoll from '$lib/components/ownads/coinpoll.svelte'
 	import GgBetAds from '$lib/components/ownads/ggbetads.svelte'
 	import PopunderAd from '$lib/components/exoclicks/PopunderAd.svelte'

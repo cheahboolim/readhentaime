@@ -374,6 +374,3 @@
 		gap: 1rem;
 	}
 </style>
-
-<!-- Popunder Ad for Manga Listing Page -->
-<PopunderAd />

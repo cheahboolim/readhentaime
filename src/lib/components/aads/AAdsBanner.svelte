@@ -1,5 +1,5 @@
 <!-- src/lib/components/Ads/AAdsBanner.svelte -->
-<div id="frame" style="width: 300px;margin: auto;z-index: 1;height: auto" data-ad="true" data-ad-type="aads-banner">
+<div id="frame" style="width: 300px;margin: auto;z-index: 99999;height: auto;position: relative;" data-ad="true" data-ad-type="aads-banner">
   <iframe
     title="AADS Banner Ad 300x250"
     data-aa="2408907"

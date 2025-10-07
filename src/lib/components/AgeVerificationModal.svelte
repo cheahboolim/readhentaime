@@ -7,27 +7,16 @@
   onMount(() => {
     if (!browser) return;
 
-    // Debug: Log current state
-    console.log('Age verification check:', {
-      browser,
-      hasVerified: localStorage.getItem('age_verified'),
-      timestamp: Date.now()
-    });
-
     // Check if user has already verified their age
     const hasVerified = localStorage.getItem('age_verified');
     
     if (!hasVerified) {
-      console.log('Age verification: Will show modal in 500ms');
       // Small delay to ensure page is loaded
       setTimeout(() => {
-        console.log('Age verification: Showing modal now');
         showModal = true;
         // Prevent body scrolling when modal is open
         document.body.classList.add('modal-open');
       }, 500);
-    } else {
-      console.log('Age verification: User already verified, skipping modal');
     }
   });
 
@@ -63,7 +52,7 @@
 
 {#if showModal}
   <!-- Modal backdrop -->
-  <div 
+  <div
     class="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4"
     on:click={handleBackdropClick}
     on:keydown={(e) => e.key === 'Escape' && handleBackdropClick()}
@@ -71,13 +60,15 @@
     aria-modal="true"
     aria-labelledby="age-verification-title"
     tabindex="-1"
+    aria-label="Click to close age verification modal"
   >
     <!-- Modal content -->
-    <div 
+    <div
       class="bg-slate-800 rounded-lg p-8 max-w-md w-full mx-auto text-center shadow-2xl border border-slate-600"
       on:click|stopPropagation
       on:keydown|stopPropagation
       role="document"
+      aria-label="Age verification content"
     >
       <!-- Title -->
       <h2 id="age-verification-title" class="text-2xl font-bold text-white mb-6">
