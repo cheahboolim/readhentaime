@@ -77,5 +77,5 @@
 		<ConversionDebug />
 	{/if}
 	<!-- <AgeVerificationModal /> -->
-	<AdBlockDetector />
+		<!--<AdBlockDetector />-->
 </div>
