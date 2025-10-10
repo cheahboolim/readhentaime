@@ -1,6 +1,6 @@
 <script>
 	import { browser } from '$app/environment'
-	import AAdsMiddleBanner from './AAdsMiddleBanner.svelte'
+	import AAdsMiddleBanner from './aads/AAdsMiddleBanner.svelte'
 	import InterstitialAd from './exoclicks/InterstitialAd.svelte'
 	import VideoSliderAd from './exoclicks/VideoSliderAd.svelte'
 </script>
